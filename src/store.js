@@ -1,13 +1,13 @@
 import { createStore } from "redux";
-import { createAction } from "@reduxjs/toolkit";
+import { createAction, createReducer, configureStore, createSlice } from "@reduxjs/toolkit";
 
 // Actions
-const addToDo = createAction("ADD")
-const deleteToDo = createAction("DELETE")
+// const addToDo = createAction("ADD")
+// const deleteToDo = createAction("DELETE")
 
 
 // Reducer
-const reducer = (state = [], action) => {
+/* const reducer = (state = [], action) => {
     console.log(action)
     switch(action.type) {
         case addToDo.type:
@@ -17,14 +17,34 @@ const reducer = (state = [], action) => {
         default:
             return state;
     }
-}
+} */
+// const reducer = createReducer([], {
+//     [addToDo]: (state, action) => {
+//         // Unlike plain redux, redux-toolkit allows mutation in state! (immer)
+//         // 1) since the state is mutated, **nth is returned**
+//         state.push({ text: action.payload, id: Date.now() })
+//     },
+//     [deleteToDo]: (state, action) =>
+//         // 2) on the other hand, **this is returning a new state**
+//         state.filter(toDo => toDo.id !== action.payload)
+// })
+
+const toDos = createSlice({
+    name: 'toDosReducer',
+    initialState: [],
+    reducers: {
+        add: (state, action) => { state.push({ text: action.payload, id: Date.now() }) },
+        remove: (state, action) => state.filter(toDo => toDo.id !== action.payload)
+    }
+})
 
 // Store
-const store = createStore(reducer);
+// also try out Redux DevTools
+// const store = createStore(reducer);
+const store = configureStore({ reducer: toDos.reducer });
 
-export const actionCreators = {
-    addToDo,
-    deleteToDo
-}
+// console.log(toDos)
+
+export const { add, remove } = toDos.actions;
 
 export default store;
